@@ -1,1 +1,0 @@
-sys.stdin = open("input.txt")
