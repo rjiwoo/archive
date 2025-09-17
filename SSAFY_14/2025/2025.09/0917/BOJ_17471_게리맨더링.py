@@ -52,7 +52,7 @@ def comb(count, idx, target):
         # bfs로 인접한지 확인할 수 있다는 것 같음..
         # 아. 방문체크한 길이가 A랑 다르면 연결안된거임. 
         # 만약 연결 안되어 있으면 추가적으로 더 할 필요 없는 조합이니까 건너뛰기.
-        check_A  = bfs(A)
+        check_A = bfs(A)
         if check_A == False:
             # print(A)
             return 
