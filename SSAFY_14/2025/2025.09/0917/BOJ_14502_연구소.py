@@ -13,7 +13,9 @@
 
 # 연구소의 지도가 주어졌을 때 얻을 수 있는 안전 영역 크기의 최댓값을 구하는 프로그램
 
-def dfs(sr, sc, visited):
+import copy
+
+def dfs(sr, sc, temp, visited):
     visited[sr][sc] = 1 # 방문표시
 
     for i in range(4):
@@ -21,35 +23,46 @@ def dfs(sr, sc, visited):
         nc = sc + dc[i]
 
         # 범위를 벗어나지 않고
-        if 0 <= nr < N and 0 <= nc < N:
-            if graph[nr][nc] == 0 and visited[nr][nc] == 0:
-                graph[nr][nc] = 2
-                visited[nr][nc] = 1
-                dfs(nr,nc)
-
+        if 0 <= nr < N and 0 <= nc < M:
+            if temp[nr][nc] == 0 and visited[nr][nc] == 0:
+                temp[nr][nc] = 2
+                dfs(nr,nc,temp, visited)
+                
 
 # 상하좌우
 dr = [-1, 1, 0, 0]
 dc = [0, 0, -1, 1]
 
 def comb(count, idx):
+    global answer 
     if count == 3:
         # print(picked)
 
+        # 조합을 하나 선택할 때마다 연구소의 원본을 복사 받아서
+        # 복사본에 벽을 세우고, 바이러스 퍼뜨리기
+        # 복사본이기 때문에 원본에 영향을 주지 않음 -> 원본을 그대로 쓸 경우, 변형된 지도를 기준으로 계산하게 됨
+        # -> 원복하는걸로 하면 안되나? -> 잘못된 순서로 원복할까봐 그냥 복사본 씀
+        temp = copy.deepcopy(graph)
+
         # 선택한 조합의 위치에 벽 세우기
         for i in range(len(picked)):
-            graph[picked[i][0]][picked[i][0]] = 1
+            temp[picked[i][0]][picked[i][1]] = 1
         
-        visited = [[0]*N for _ in range(N)]
+        visited = [[0]*M for _ in range(N)]
         # 조합에 맞게 변형된 연구소의 지도에서 바이러스를 퍼뜨려
         for r in range(N):
-            for c in range(N):
+            for c in range(M):
                 # 바이러스이고, 방문하지 않은 위치라면
-                if graph[r][c] == 2 and visited[r][c] == 0:
-                    dfs(r, c)
-                    for k in range(N):
-                        for h in range(N):
-                            
+                if temp[r][c] == 2 and visited[r][c] == 0:
+                    dfs(r, c, temp, visited)
+        safe = 0
+        for k in range(N):
+            for h in range(M):
+                if temp[k][h] == 0:
+                    safe += 1
+    
+        answer = max(answer, safe)
+                          
         return
     
     for i in range(idx, len(block)):
@@ -58,11 +71,10 @@ def comb(count, idx):
         picked.pop()
 
 
-
 # 세로, 가로
 N, M = map(int, input().split())
 graph = [list(map(int, input().split())) for _ in range(N)]
-answer = N*N    # 안전 영역 크기의 최댓값(배열의 크기를 넘지 못함)
+answer = 0   # 안전 영역 크기의 최솟값
 
 # 벽을 3개 세울 건데, 어디다가 세우느냐에 따라서 바이러스 퍼지는게 달라짐
 # 그러면 하나씩 다 세워보고 -> 빈 칸 위치 구해서 조합으로 3개 선정
@@ -75,12 +87,12 @@ answer = N*N    # 안전 영역 크기의 최댓값(배열의 크기를 넘지 �
 # 빈칸의 위치를 저장해둘 곳
 block = []
 for r in range(N):
-    for c in range(N):
-        if graph[r][c]:
+    for c in range(M):
+        if graph[r][c] == 0:
             block.append((r,c))
 
 # print(block)
 picked = []
 comb(0,0)
 
-
+print(answer)
