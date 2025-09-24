@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <a href="{% url "articles:dummy-create" %}">더미 데이터 생성</a>
+
+    <h1>전체 게시글 보기</h1>
+
+    {% for article in articles %}
+        <hr>
+        <h2>제목 : {{ article.title }}</h2>
+        <p>내용 : {{ article.content }}</p>
+    {% endfor %}
+    <hr>
+    
+</body>
+</html>
