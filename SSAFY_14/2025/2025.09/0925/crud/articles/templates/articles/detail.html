@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 상세</title>
+</head>
+<body>
+    <h2>게시글 상세</h2>
+
+    {% comment %} 저장을 수행할 url을 넣어야함 action 은 {% endcomment %}
+    <form action="{% url "articles:delete" article.pk %}" method="POST">
+        {% csrf_token %}
+        제목 : <input type="text" name="title" value="{{ article.title }}" disabled><br/>
+        내용 : <textarea name="content" rows="18" disabled>{{ article.content }}</textarea><br/>
+        <button>삭제</button>
+    </form>
+    <a href="{% url "articles:update" article.pk %}">수정</a><br/>
+    <a href="{% url "articles:index" %}">목록으로</a>
+</body>
+</html>
