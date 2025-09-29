@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<main class="container-fluid page-section" style="margin-top: 90px;">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <h2 class="page-title">메인 페이지</h2>
+      </div>
+    </div>
+
+    <div class="row g-5 mt-3">
+      {% for movie in movies %}
+        <div class="col-md-5">
+          <div class="card border rounded-3 card--modal">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <span class="card-header-title">{{ movie.title }}</span>
+            </div>
+            <div class="card-body">
+              <p class="card-text mb-4">
+                {{ movie.content|truncatechars:200 }}
+              </p>
+              <div class="d-flex">
+                <a href="{% url 'movies:detail' movie.pk %}" class="btn btn-primary">Detail</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <p>등록된 영화가 없습니다.</p>
+      {% endfor %}
+    </div>
+  </div>
+</main>
+{% endblock %}

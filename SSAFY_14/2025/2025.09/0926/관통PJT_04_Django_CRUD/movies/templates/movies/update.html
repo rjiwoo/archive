@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+
+<main class="container my-5">
+    <h2 class="mb-4">영화 수정 페이지</h2>
+    
+    <section class="card app-card shadow-sm border-0">
+        <form action="{% url 'movies:update' movie.pk %}" method="POST">
+            {% csrf_token %}
+            <div class="card-body app-card-body">
+                <div class="mb-3">
+                    <label for="title" class="form-label small text-secondary">제목</label>
+                    <input id="title" name="title" class="form-control" type="text" value="{{ movie.title }}" />
+                </div>
+                
+                <div class="mb-3">
+                    <label for="director" class="form-label small text-secondary">감독</label>
+                    <input id="director" name="director" class="form-control" type="text" value="{{ movie.director }}" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="content" class="form-label small text-secondary">줄거리</label>
+                    <textarea id="content" name="content" class="form-control" rows="6">{{ movie.content }}</textarea>
+                </div>
+                
+            </div>
+            
+            <div class="card-footer app-card-footer border-0 px-3 pb-3">
+                {% comment %} <a href="{% url 'movies:index' %}" class="btn btn-secondary ms-2">INDEX</a> {% endcomment %}
+                <button type="submit" class="btn btn-primary">UPDATE</button>
+            </div>
+        </form>
+    </section>
+    
+</main>
+
+{% endblock content %}
