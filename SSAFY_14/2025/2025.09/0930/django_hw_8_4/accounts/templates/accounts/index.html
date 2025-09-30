@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h4>hello, {{ user.username }}</h4>
+    <a href="{% url "accounts:login" %}">[LOGIN]</a><br>
+    <form action="{% url "accounts:logout" %}">
+        <button>LOGOUT</button>
+    </form>
+    
+    <h1>전체 유저 목록</h1>
+    {% for user in users %}
+        <ul>
+            <li>{{ user.username }}</li>
+            <hr>
+        </ul>
+    {% endfor %}
+
+{% endblock %}
+
