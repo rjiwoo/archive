@@ -23,7 +23,8 @@
 #   4. 택배 번호가 작은 순서대로 제거(제거하는 택배의 번호 순서를 따로 저장해두기) 
 #   5. 하나 제거하면 공간 다시 탐색해서 떨어질 택배 있으면 떨구기
 #       - 맨 아래의 택배부터 확인해서 떨어지는게 가능하면 위의 택배도 떨구면 되려나?   
-#   6. 왼쪽 다 빼고 나면, 오른쪽도 위의 순서 반복
+#   6. 맨 오른쪽 택배 제거
+#   7. '왼쪽 -> 떨구기 -> 오른쪽' 순서로 택배를 모두 하차시킬 때까지 반복 
 
 # 풀이 생각 1.택배가 투입되서 최종적으로 위치할 공간을 찾기
 def find_r(h, w, c):
@@ -56,7 +57,21 @@ def can_remove_left(k):
             if graph[i][j] != 0:
                 return False
     return True
+
+# 오른쪽 택배 하차 가능한지 확인
+def can_remove_right(k):
+    h, w, r, c = box_info[k]
+
+    # 맨 오른쪽에 위치하면 택배 하차 가능
+    if c + w == N:
+        return True
     
+    # 해당 택배의 오른쪽이 다 공백이 아니면 하차 불가능
+    for i in range(r, r + h):
+        for j in range(c + w, N):
+            if graph[i][j] != 0:
+                return False
+    return True
 
 # 박스 제거
 def remove(k):
@@ -64,6 +79,15 @@ def remove(k):
         for c in range(N):
             if graph[r][c] == k:
                 graph[r][c] = 0
+
+# 택배 아래로 떨구기
+def down():
+    # 맨 아래 행부터 돌면서 해당 공간이 0이면 그 위의 택배가 아래로 내려올 수 있는지 확인
+    # 내려올 수 있으면 아래로 떨구기
+    for r in range(N-1, -1, -1):
+        for c in range(N):
+            if graph[r][c] == 0 and graph[r-1][c]:
+                
 
 
 N, M = map(int, input().split())   # 택배가 쌓일 공간 N x N , 투입될 택배의 개수 M
@@ -83,21 +107,41 @@ for _ in range(M):
     fill_box(k, h, w, r, c)
 # print(graph)
 
-# 3. 맨 왼쪽 찾기
-#       - 택배 번호가 작은 것부터 확인
-#       - 택배의 왼쪽 면만큼 
-for k in range(1, M + 1):
-    if k not in box_info:
-        continue
-    # 왼쪽으로 택배 하차가 가능하다면,
-    if can_remove_left(k):
-        remove(k)   # 택배 제거
-        remove_order.append(k)  # 제거한 택배 번호 저장
-        del box_info[k] # 택배 정보 제거
+# 3. '왼쪽 -> 떨구기 -> 오른쪽' 순서로 택배를 모두 하차하기 전까지 반복  
+while len(remove_order) < M:    # M개의 택배가 모두 하차될 때까지
+    left_turn = (turn % 2 == 0) # 왼쪽부터 빼기
+
+    if left_turn:   # 왼쪽 하차
+        # 3-1. 맨 왼쪽 찾기
+        #       - 택배 번호가 작은 것부터 확인
+        #       - 택배의 왼쪽 면만큼 
+        for k in range(1, M + 1):
+            if k not in box_info:
+                continue
+            # 왼쪽으로 택배 하차가 가능하다면,
+            if can_remove_left(k):
+                remove(k)   # 택배 제거
+                remove_order.append(k)  # 제거한 택배 번호 저장
+                del box_info[k] # 택배 정보 제거
+                break
+
+    else:   # 오른쪽 하차
+        for k in range(1, M + 1):
+            if k not in box_info:
+                continue
+            # 왼쪽으로 택배 하차가 가능하다면,
+            if can_remove_right(k):
+                remove(k)   # 택배 제거
+                remove_order.append(k)  # 제거한 택배 번호 저장
+                del box_info[k] # 택배 정보 제거
+                break
+
+    # 택배 하차를 했으니까, 택배 공간 다시 봐서 택배를 아래로 이동할 수 있는게 있으면 이동시키기
+    # 제거한 택배의 위의 박스만 보면 될 것 같은데, 아래로 내리면 되니까
+    #   -> 제거한 택배 위의 박스가 있는지를 확인해야하는데, 이건 택배 제거가 가능한지 확인할 때 보면 좋으려나
 
 
-    # 다시 택배공간 봐서 택배가 아래로 이동할 수 있으면 이동
-    # 제거한 택배의 위의 박스만 보면 될 것 같은데, 아래로 내리면 되니까 
+
     
 
 
