@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>책 상세 정보</h1>
+  <p>등록 번호 : {{ book.pk }}</p>
+  <p>제목 : {{ book.title }}</p>
+  <p>설명 : {{ book.description }}</p>
+  <hr>
+
+  <h2>리뷰 등록</h2>
+  {% if request.user.is_authenticated %}
+    <!-- 로그인된 경우 리뷰 작성 폼 표시 -->
+    <form action="{% url 'libraries:review_create' book.pk %}" method="POST">
+      {% csrf_token %}
+      {{ review_form }}
+      <input type="submit" value="리뷰 작성">
+    </form>
+  {% else %}
+    <!-- 로그인되지 않은 경우, 로그인 후 리뷰 작성 안내 -->
+    <p>로그인 후 작성해 주세요.</p>
+  {% endif %}
+  <hr>
+
+  <h2>리뷰 전체 목록</h2>
+  {% if request.user.is_authenticated %}
+    <!-- 로그인된 경우 리뷰 작성 폼 표시 -->
+     <ul>
+      {% for  in  %}
+        <li>
+          {% comment %} 
+            리뷰 작성자 - 리뷰 내용
+            현재 로그인 한 사람이 리뷰 작성일 경우에, 그 리뷰 내용을 삭제할 수 있음
+          {% endcomment %}
+          <p>{{ .user }} - {{ review.content }}</p>
+          <form action="{% url 'libraries:review_delete' book.pk %}" method="POST">
+            {% csrf_token %}
+            <input type="submit" value="리뷰 삭제">
+          </form>
+        </li>
+      {% endfor %}
+     </ul>
+  {% else %}
+    <!-- 로그인되지 않은 경우, 로그인 후 리뷰 작성 안내 -->
+    <p>로그인 후 작성해 주세요.</p>
+  {% endif %}
+
+{% endblock content %}
