@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <div id="ssafy">
+        <p>Message : {{ msg }}</p>
+        <div v-html="rawHtml"></div>
+        <div v-bind:id="dynamicId">Dynamic Id</div>
+        {{ number + 1 }}
+    </div>
+
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+        const { createApp, ref } = Vue
+
+        const app = createApp({
+            setup() {
+                const msg = 'Hello'
+                const rawHtml = ref('<span style="color:blue">이 곳은 JS 영역에서 작성된 </span>')
+                const dynamicId = ref('my-id')
+                const number = ref(10)
+
+                return {
+                    msg,
+                    rawHtml,
+                    dynamicId,
+                    number,
+                }
+            }
+        })
+
+        app.mount('#ssafy')
+    </script>
+</body>
+
+</html>
